@@ -1,9 +1,9 @@
 import React from 'react';
 import classes from './Inpute.modal.css'
 
-const Input = ({ name, placeholder, onChange }) => {
+const Input = ({ name, value, placeholder, onChange }) => {
     return (
-        <input className={classes.Input} name={name} placeholder={placeholder} onChange={onChange} />
+        <input className={classes.Input} name={name} placeholder={placeholder} onChange={onChange} value={value} />
     );
 }
 

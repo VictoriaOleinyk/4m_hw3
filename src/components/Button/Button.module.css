@@ -1,8 +1,11 @@
+
 .button {
     width: 100px;
     height: 45px;
-    border-radius: 8px;
-    color: white;
-    background-color: blue;
+    color: #fff;
+    border-radius:8px;
+    background: blue;
     border: none;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }

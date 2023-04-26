@@ -1,52 +1,98 @@
-import Modal from "./components/Modal/Modal.";
-import { useState} from "react";
-import Container from "./components/Container/Container";
-import classes from "./App.module.css";
-import Button from "./components/Button/Button";
-import List from "./components/List/List";
+import Modal from './components/Modal/Modal';
+import { useState } from 'react';
+import classes from './App.module.css'
+import Container from './components/Container/Container';
+import Button from './components/Button/Button';
+import TodoCard from './components/TodoCard/TodoCard';
 import Input from "./components/Input/Input";
-
-
 
 function App() {
 
-    const [isShow, setIsShow ] = useState(false)
-
-    const [todo, setTodo] = useState([
+    const [ isShow, setIsShow ]  = useState(false)
+    const [ newTask, setNewTask ] = useState('');
+    const [ search, setSearch ] = useState('');
+    const [ tasks, setTasks ] =  useState([
         {
-            id:1 ,
-            task: 'coding'
+            id: 1,
+            title: 'Coding',
+            completed: false
         },
         {
-            id:2,
-            task: 'eat'
+            id: 2,
+            title: 'Eat',
+            completed: false
         },
         {
-            id:3,
-            task: 'sleep'
-        }
-    ])
+            id: 3,
+            title: 'Sleep',
+            completed: false
+        },
+        {
+            id: 4,
+            title: 'Coding',
+            completed: false
+        },
+    ]);
+    const handleShow = () => setIsShow(!isShow)
 
 
 
-    const handleShow = () => {
-        setIsShow(!isShow)
-        console.log(isShow, 'isShow')
+
+    const handleAddTask = () => {
+
+        if(newTask.length < 1 ) return
+
+        setTasks((prevState) => [...prevState,
+            {
+                id: Date.now(),
+                title: newTask,
+                completed: false
+            }
+        ])
+        setNewTask('')
+        handleShow();
     }
 
-  return (
-    < >
-        <Container>
-            <div className={classes.wrapper}>
-                <Input/>
-                { isShow && <Modal setTodo={setTodo}  handleShow={handleShow} />}
-                <Button handleClick={handleShow}><p>Добавить</p></Button>
-                <List todo={todo} setTodo={setTodo}/>
-            </div>
-        </Container>
+    const handleDeleteTask = (id) => {
+        let newTask = [...tasks].filter(item => item.id!== id)
+        setTasks(newTask)
+    }
 
-    </>
-  );
+    const handleDone = (id) => {
+        const newList = tasks.map(task => {
+            if (task.id === id) {
+                return {...task, completed: !task.completed }
+            }else {
+                return task
+            }
+        })
+        setTasks([...newList])
+    }
+
+    const handleSearch = (event) => {
+        setSearch(event.target.value)
+    }
+    const filteredTasks = tasks.filter(task => task.title.toLowerCase().includes(search.toLowerCase()));
+
+    console.log(filteredTasks, 'filtered tasks');
+    console.log(tasks, 'tasks');
+    return (
+        <>
+            <Container>
+                <div className={classes.wrapper}>
+                    { isShow && <Modal handleAddTask={handleAddTask} setNewTask={setNewTask} handleShow={handleShow}  /> }
+                    <Button handleClick={handleShow}><p>Добавить</p></Button>
+                    <Input className={classes.input} name='search' placeholder='Поиск...' onChange={handleSearch} />
+                    {filteredTasks.map(task =>
+                        <TodoCard
+                            handleDone={handleDone}
+                            handleDeleteTask={handleDeleteTask}
+                            key={task.id}
+                            task={task} />)}
+                </div>
+            </Container>
+        </>
+    );
 }
 
 export default App;
